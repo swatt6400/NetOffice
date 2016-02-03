@@ -880,10 +880,10 @@ namespace NetOffice.OutlookApi.Tools
                 key.SetValue("CodeBase", thisAssembly.CodeBase);
                 key.Close();
                 
-				Registry.ClassesRoot.CreateSubKey(@"CLSID\{" + type.GUID.ToString().ToUpper() + @"}\Programmable");
-				key = Registry.ClassesRoot.OpenSubKey(@"CLSID\{" + type.GUID.ToString().ToUpper() + @"}\InprocServer32", true);
-				key.SetValue("", NetRuntimeSystem.Environment.SystemDirectory + @"\mscoree.dll", RegistryValueKind.String);
-				key.Close();
+		Registry.ClassesRoot.CreateSubKey(@"CLSID\{" + type.GUID.ToString().ToUpper() + @"}\Programmable");
+		key = Registry.ClassesRoot.OpenSubKey(@"CLSID\{" + type.GUID.ToString().ToUpper() + @"}\InprocServer32", true);
+		key.SetValue("", NetRuntimeSystem.Environment.SystemDirectory + @"\mscoree.dll", RegistryValueKind.String);
+		key.Close();
 
                 // add bypass key
                 // http://support.microsoft.com/kb/948461
@@ -894,13 +894,14 @@ namespace NetOffice.OutlookApi.Tools
                 key.Close();
 
                 // register addin in Outlook
-                Registry.CurrentUser.CreateSubKey(_addinOfficeRegistryKey +  progId.Value);
                 RegistryKey regKeyWord = null;
                 
-                if(location.Value == RegistrySaveLocation.LocalMachine)
-                    regKeyWord = Registry.LocalMachine.OpenSubKey(_addinOfficeRegistryKey + progId.Value, true);
-                else
-                    regKeyWord = Registry.CurrentUser.OpenSubKey(_addinOfficeRegistryKey + progId.Value, true);
+                if (location.Value == RegistrySaveLocation.LocalMachine) {
+                    Registry.LocalMachine.CreateSubKey(_addinOfficeRegistryKey +  progId.Value);
+                    regKeyWord = Registry.LocalMachine.OpenSubKey(_addinOfficeRegistryKey + progId.Value, true); }
+                else {
+                    Registry.CurrentUser.CreateSubKey(_addinOfficeRegistryKey +  progId.Value);
+                    regKeyWord = Registry.CurrentUser.OpenSubKey(_addinOfficeRegistryKey + progId.Value, true); }
 
                 regKeyWord.SetValue("LoadBehavior", addin.LoadBehavior);
                 regKeyWord.SetValue("FriendlyName", addin.Name);
